@@ -6,7 +6,7 @@ class Base < Thor
   desc "fetch File", "get file from sftp"
   
   def fetch(file)
-  	Net::SFTP.start('www.aaronheld.com', 'aarontest', :password => 'PASSWORD') do |sftp|
+    Net::SFTP.start('www.aaronheld.com', 'aarontest', :password => 'PASSWORD') do |sftp|
     	sftp.download!(file, file)
     end
   end
