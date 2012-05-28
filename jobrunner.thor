@@ -1,36 +1,16 @@
-require 'net/ssh'
-require 'net/sftp'
-require 'csv'
+require './base_fetcher'
 require 'Thor'
-class Base < Thor
-  desc "fetch File", "get file from sftp"
-  
-  def fetch(file)
-    Net::SFTP.start('www.aaronheld.com', 'aarontest', :password => 'PASSWORD') do |sftp|
-    	sftp.download!(file, file)
-    end
-  end
 
-  desc "calidate_row ROW", "validate a row of data"
-  def validate_row(row)
-  	row
-  end
+class Jobrunner < Thor
 
-  desc "transform_and_validate FILE", "validate and convert"
-  def transform_and_validate(file)
-	#open destination file
-	CSV.open("cleaned#{file}", "wb") do |csv|
-  		#open source file
-  		CSV.foreach(file) do |row|
-			csv << validate_row(row)  		
-  		end
-	end
-  end
+  desc "fetch sftp JSON",%q(download a file using a config passed in via json
 
-  desc "doit FILE", "download validate and xform data"
-  def doit(file)
-  	fetch(file)
-  	transform_and_validate(file)
+  $ bundle exec thor jobrunner:fetch_sftp '{"fetch_url":"sftp://www.domain.com/","user_name":"username","password" :"password","filename":"filename"}'
+   )
+
+  def fetch_sftp(config)
+    b = BaseFetcher.new config
+    b.fetch
   end
 
 end
